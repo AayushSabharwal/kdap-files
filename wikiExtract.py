@@ -65,9 +65,10 @@ class wikiExtract(object):
         
         return template_dict
 
+
 '''
 w = wikiExtract()
-B = w.get_articles_by_category(['Black Lives Matter'])
+B = w.get_articles_by_template('Black Lives Matter')
 for key,val in B.items():
     print(key, val)
 '''
