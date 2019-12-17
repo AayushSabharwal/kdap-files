@@ -7,16 +7,14 @@ def get_monthly_revision_count_by_category(template_name):
     w = wikiExtract()
     category_dict = w.get_articles_by_template(template_name)
     article_list = category_dict[template_name]
-    monthly_revisions_dict = {}
+    monthly_revisions_dict = {template_name: {}}
     for article in article_list:
-        article_revision_count_dict = {}
         revisions = get_revisions_of_article(article['title'])[article['title']]
         for revision in revisions:
             timestamp = revision['timestamp'][:7]
-            if timestamp not in article_revision_count_dict:
-                article_revision_count_dict[timestamp] = 0
-            article_revision_count_dict[timestamp] += 1
-        monthly_revisions_dict[article['title']] = article_revision_count_dict
+            if timestamp not in monthly_revisions_dict[template_name]:
+                monthly_revisions_dict[template_name][timestamp] = 0
+            monthly_revisions_dict[template_name][timestamp] += 1
 
     return monthly_revisions_dict
 

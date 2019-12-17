@@ -7,19 +7,17 @@ def get_monthly_authors_by_category(template_name):
     w = wikiExtract()
     category_dict = w.get_articles_by_template(template_name)
     article_list = category_dict[template_name]
-    monthly_revisions_dict = {}
+    monthly_revisions_dict = {template_name: {}}
     for article in article_list:
-        article_authors_dict = {}
         revisions = get_revisions_of_article(article['title'])[article['title']]
         for revision in revisions:
             timestamp = revision['timestamp'][:7]
-            if timestamp not in article_authors_dict:
-                article_authors_dict[timestamp] = []
+            if timestamp not in monthly_revisions_dict[template_name]:
+                monthly_revisions_dict[template_name][timestamp] = []
             if 'user' in revision:
                 author = revision['user']
-                if author not in article_authors_dict[timestamp]:
-                    article_authors_dict[timestamp].append(author)
-        monthly_revisions_dict[article['title']] = article_authors_dict
+                if author not in monthly_revisions_dict[template_name][timestamp]:
+                    monthly_revisions_dict[template_name][timestamp].append(author)
 
     return monthly_revisions_dict
 
