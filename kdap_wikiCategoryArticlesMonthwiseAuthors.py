@@ -3,10 +3,10 @@ from wikiExtract import wikiExtract
 # import time
 
 
-def get_monthly_revision_count_by_category(category_name):
+def get_monthly_authors_by_category(template_name):
     w = wikiExtract()
-    category_dict = w.get_articles_by_template(category_name)
-    article_list = category_dict[category_name]
+    category_dict = w.get_articles_by_template(template_name)
+    article_list = category_dict[template_name]
     monthly_revisions_dict = {}
     for article in article_list:
         article_authors_dict = {}
