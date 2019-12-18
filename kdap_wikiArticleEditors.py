@@ -23,7 +23,7 @@ def get_editors_of_article(article_name):
             url = url + '&rvcontinue=' + data['continue']['rvcontinue']
         else:
             break
-
+    editors_list = list(set(editors_list))
     editors_dict[article_name] = editors_list
     return editors_dict
 
