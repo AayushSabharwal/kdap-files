@@ -29,8 +29,11 @@ def get_jaccard_graph(template_name, focal_articles):
     template_articles_data = w.get_articles_by_template(template_name)[template_name]
     category_articles_data = w.get_articles_by_category(template_name)[template_name]
     category_articles_names = [data['title'] for data in category_articles_data]
+    print(len(category_articles_names))
     template_articles_names = [data['title'] for data in template_articles_data]
-    category_articles = set(category_articles_names).union(set(template_articles_names))
+    print(len(template_articles_names))
+    category_articles = list(set(category_articles_names).union(set(template_articles_names)))
+    print(len(category_articles))
     times_to_editors = {}  # mapping of timestamp to editors who edited then
     focal_times_to_editors = {}  # mapping of focal article name to {mapping of timestamp to editors}
     for article in focal_articles:
