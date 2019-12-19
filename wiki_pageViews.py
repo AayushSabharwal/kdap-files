@@ -1,11 +1,14 @@
-def get_pageviews(self, site_name, *args, **kwargs):
+from mwviews.api import PageviewsClient
+
+
+def get_pageviews(site_name, *args, **kwargs):
     if site_name.lower() == 'wikipedia':
         start = ''
         end = ''
         granularity = 'monthly'
         if kwargs.get('article_name') != None:
             article_name = kwargs['article_name']
-        article_name = self.get_article_name(article_name)
+        # article_name = self.get_article_name(article_name)
         if kwargs.get('start') != None:
             start = kwargs['start'].replace('-', '')
 
