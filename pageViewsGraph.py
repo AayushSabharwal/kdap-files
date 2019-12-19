@@ -7,7 +7,7 @@ from dateutil.relativedelta import *
 def get_pageviews_graph(articles):
     pageviews = get_pageviews('wikipedia', article_name=articles, start='2015-07-01', end='2016-07-01',
                               granularity='daily')
-    print(pageviews)
+
     for article in articles:
         plt.plot([(int(dt.strftime('%Y')) - 2015) * 365 + int(dt.strftime('%j')) for dt in pageviews.keys()],
                  [pageviews[dt][article] for dt in pageviews.keys()], label=article.replace('_', ' '))
