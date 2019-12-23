@@ -2,10 +2,12 @@ import requests
 # import time
 
 
-def get_revisions_of_article(article_name):
+def get_revisions_of_article(article_name, rvprop=''):
     url1 = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=revisions&rvlimit=500&titles="
     revisions_dict = {}
     url = url1 + article_name
+    if rvprop != '':
+        url = url + '&rvprop=' + rvprop
     revisions_list = []
 
     while True:
