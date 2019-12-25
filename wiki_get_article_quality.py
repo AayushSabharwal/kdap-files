@@ -20,7 +20,10 @@ def get_articles_quality(articles, category=''):
                         if category in assessments:
                             quality_dict[article] = {category: assessments[category]}
                     else:
-                        quality_dict[article] = assessments
+                        if article in quality_dict.keys():
+                            quality_dict[article].update(assessments)
+                        else:
+                            quality_dict[article] = assessments
                 else:
                     print('NO pageassessments', article)
             if data.get('continue') is not None:
@@ -31,3 +34,8 @@ def get_articles_quality(articles, category=''):
         if article not in quality_dict.keys():
             print("ERROR: No matching quality category", article)
     return quality_dict
+
+
+'''
+print(get_articles_quality('Cleopatra'))
+'''

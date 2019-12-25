@@ -68,7 +68,7 @@ class wikiExtract(object):
 
 '''
 w = wikiExtract()
-B = w.get_articles_by_template('Black Lives Matter')
+B = w.get_articles_by_template('All Wikipedia Bots')
 for key,val in B.items():
-    print(key, val)
+    print(key, len(val))
 '''

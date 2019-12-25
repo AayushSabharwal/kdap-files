@@ -2,30 +2,55 @@ from wikiExtract import wikiExtract
 from kdap_wikiArticleRevisions import get_revisions_of_article
 from wiki_get_article_quality import get_articles_quality
 import json
-
-
-def get_articles_in_wikiproj(proj):
-    wikiProjectName = "Category:WikiProject_" + proj + "_articles"
-    w = wikiExtract()
-
+import requests
 
 
 def get_all_articles_data(categories):
     # getting all the articles and quality data
-    w = wikiExtract()
-    all_articles = []
-    articles = {}
-    quality = {}
-    for category in categories:
-        wikiProjectName = "Category:WikiProject_" + category + "_articles"
-        articles[category] = w.get_articles_by_category(category)[category]
-        all_articles.extend(articles[category])
-        category_articles_titles = [article['title'] for article in articles[category]]
-        raw_quality = get_articles_quality(category_articles_titles, category)
-        for article in raw_quality:
-            quality[article] = raw_quality[article][category]['class']
-    print(len(all_articles))
-    print("A")
+    with open("sample_articles.txt", "r") as fh:
+        all_articles = [article.strip() for article in fh.readlines()][:100]
+
+    articles_quality = {}
+    category_articles = {}
+    for article in all_articles:
+        if article[:14].lower() == 'category talk:':
+            all_articles.remove(article)
+        if article[:11].lower() == 'draft talk:':
+            all_articles.remove(article)
+
+    for article in all_articles:
+        quality = get_articles_quality(article)
+        if article in quality.keys():
+            for category in quality:
+                if category in categories:
+                    if category in category_articles.keys():
+                        category_articles[category].append(article)
+                    else:
+                        category_articles[category] = [article]
+                    quality = {category: quality[category]['class']}
+                    break
+            if len(quality.keys()) != 1:
+                print("Quality error:", article, quality)
+                all_articles.remove(article)
+            else:
+                articles_quality[article] = quality
+        else:
+            all_articles.remove(article)
+            print(article, quality)
+
+    # getting all bots
+    all_bots = []
+    url = "https://en.wikipedia.org/w/api.php?format=json&action=query&list=allusers&augroup=bot"
+    while True:
+        r = requests.get(url)
+        data = r.json()
+        all_bots.extend([bot['name'] for bot in data['query']['allusers']])
+
+        if data.get('continue') is not None:
+            url = url + '&aufrom=' + data['continue']['aufrom']
+        else:
+            break
+
     # getting all revisions and editors of articles, removing articles with only one editor
     editors = {}
     all_editors = []
@@ -34,7 +59,7 @@ def get_all_articles_data(categories):
         revisions[article] = get_revisions_of_article(article, rvprop='ids|timestamp|flags|comment|user|sha1')[article]
         article_editors = []
         for revision in revisions[article]:
-            if revision.get('user') is not None and revision['user'][-3:].lower() != 'bot':
+            if revision.get('user') is not None and revision['user'] not in all_bots:
                 article_editors.append(revision['user'])
         article_editors = list(set(article_editors))
 
@@ -43,31 +68,33 @@ def get_all_articles_data(categories):
             all_articles.remove(article)
             del revisions[article]
             for category in categories:
-                if article in articles[category]:
-                    articles[category].remove(article)
+                if article in category_articles[category]:
+                    category_articles[category].remove(article)
                     break
         else:
             editors[article] = article_editors
             all_editors.extend(article_editors)
 
     all_editors = list(set(all_editors))
-    print("B")
+
     # getting article talk page edit history
     talk_page_edits = {}
     for article in all_articles:
         talk_page_edits[article] = get_revisions_of_article('Talk:' + article,
                                                             rvprop='ids|timestamp|flags|comment|user|sha1')
-    print("C")
+
     # storing data as json
     with open("articles_data.json", "w") as fh:
         json.dump({"categories": categories,
-                   "category_articles": articles,
+                   "category_articles": category_articles,
                    "all_articles": all_articles,
                    "article_editors": editors,
                    "all_editors": all_editors,
+                   "all_bots": all_bots,
                    "article_revisions": revisions,
-                   "article_quality": quality,
+                   "article_quality": articles_quality,
                    "article_talk_page_edits": talk_page_edits}, fh)
 
 
-get_all_articles_data(['Culture'])
+get_all_articles_data(['Geography', 'History', 'Philosophy', 'Religion', 'Mathematics', 'Sociology', 'Technology',
+                       'Science', 'Culture'])
