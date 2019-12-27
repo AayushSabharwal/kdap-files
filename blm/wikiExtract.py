@@ -23,7 +23,6 @@ class wikiExtract(object):
         article_list = []
         extra_category = []
         while (True):
-            print(url)
             r = requests.get(url)
             data = r.json()
             pages = data['query']['categorymembers']

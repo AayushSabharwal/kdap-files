@@ -35,9 +35,9 @@ def get_graph(template_name):
 
     timestamps, y_articles = create_x_and_y(revisions_count, template_name)
     plt.plot(timestamps, y_articles, label='Revisions')
-
     plt.yscale('log')
     plt.legend(loc='best')
+    plt.savefig("Figure2.png", dpi=800)
     plt.show()
 
 
