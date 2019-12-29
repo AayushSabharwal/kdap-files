@@ -6,9 +6,10 @@ def task_conflict(article):
     revisions = get_revisions_of_article(article)
     hash_frequency = {}
     for revision in revisions:
-        if revision.get('sha1') is not None and revision['sha1'] not in hash_frequency:
-            hash_frequency[revision['sha1']] = 0
-        hash_frequency[revision['sha1']] += 1
+        if revision.get('sha1') is not None:
+            if revision['sha1'] not in hash_frequency:
+                hash_frequency[revision['sha1']] = 0
+            hash_frequency[revision['sha1']] += 1
 
     reverts = 0
     for sha1 in hash_frequency:
