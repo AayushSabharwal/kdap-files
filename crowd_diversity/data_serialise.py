@@ -1,13 +1,14 @@
 from blm.kdap_wikiArticleRevisions import get_revisions_of_article
 from crowd_diversity.wiki_get_article_quality import get_articles_quality
+from crowd_diversity.wiki_get_editor_contribution import get_editor_contribution_to_wikipedia
 import json
 from blm.wikiExtract import wikiExtract
-
+import time
 
 def get_all_articles_data(categories):
     # getting all the articles and quality data
-    with open("sample_articles.txt", "r") as fh:
-        all_articles = [article.strip() for article in fh.readlines()][100:200]
+    with open("sample_articles.txt", "r", encoding='utf8') as fh:
+        all_articles = [article.strip() for article in fh.readlines()][:100]
 
     articles_quality = {}
     category_articles = {}
@@ -37,12 +38,16 @@ def get_all_articles_data(categories):
             all_articles.remove(article)
             print('Removed ', article, 'Since it has no quality data', quality)
 
+    print("Fetched articles and quality", time.time())
+
     # getting all bots
     w = wikiExtract()
     all_bots_raw = w.get_articles_by_category('All Wikipedia bots')['All Wikipedia bots']
     all_bots = []
     for raw in all_bots_raw:
         all_bots.append(raw['title'][5:])
+
+    print("Fetched all bots", time.time())
 
     # getting all revisions and editors of articles, removing articles with only one editor
     editors = {}
@@ -68,6 +73,16 @@ def get_all_articles_data(categories):
 
     all_editors = list(set(all_editors))
 
+    print("Fetched all editors", time.time())
+    print(len(all_editors))
+    # getting editor contributions
+    editor_contributions = {}
+    for editor in all_editors:
+        print(editor, len(list(editor_contributions.keys())), 'of', len(all_editors))
+        editor_contributions[editor] = get_editor_contribution_to_wikipedia(editor)
+
+    print("Fetched all editor contributions", time.time())
+
     # getting article talk page edit history
     talk_page_edits = {}
     for article in all_articles:
@@ -75,6 +90,7 @@ def get_all_articles_data(categories):
                                                             rvprop='ids|timestamp|flags|comment|user|sha1')['Talk:' +
                                                                                                             article]
 
+    print("Fetched talk page edits", time.time())
     # storing data as json
     with open("articles_data.json", "w") as fh:
         json.dump({"categories": categories,
@@ -83,10 +99,13 @@ def get_all_articles_data(categories):
                    "article_editors": editors,
                    "all_editors": all_editors,
                    "all_bots": all_bots,
+                   "editor_contribution": editor_contributions,
                    "article_revisions": revisions,
                    "article_quality": articles_quality,
                    "article_talk_page_edits": talk_page_edits}, fh)
 
 
+'''
 get_all_articles_data(['Geography', 'History', 'Philosophy', 'Religion', 'Mathematics', 'Sociology', 'Technology',
                        'Science', 'Culture'])
+'''

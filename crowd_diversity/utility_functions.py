@@ -33,6 +33,17 @@ def get_article_talk_page_revisions(article):
     return talk_page_revisions
 
 
+def get_editor_contributions():
+    with open("articles_data.json", "r") as fh:
+        all_data = json.load(fh)
+
+    contributions = all_data['editor_contribution']
+    return contributions
+
+
+with open("articles_data.json", "r") as fh:
+    all_data = json.load(fh)
+
 """
 # with open("articles_data.json", "r") as fh:
 #    all_data = json.load(fh)

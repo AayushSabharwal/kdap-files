@@ -6,7 +6,7 @@ def task_conflict(article):
     revisions = get_revisions_of_article(article)
     hash_frequency = {}
     for revision in revisions:
-        if revision['sha1'] not in hash_frequency:
+        if revision.get('sha1') is not None and revision['sha1'] not in hash_frequency:
             hash_frequency[revision['sha1']] = 0
         hash_frequency[revision['sha1']] += 1
 
@@ -20,9 +20,3 @@ def task_conflict(article):
 def task_communication(article):
     talk_revisions = get_article_talk_page_revisions(article)
     return math.log10(len(talk_revisions))
-
-
-'''
-print(task_communication('Gammoid'))
-print(task_conflict('Gammoid'))
-'''

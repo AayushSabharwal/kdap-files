@@ -1,7 +1,6 @@
 import math
 import statistics
-from crowd_diversity.utility_functions import get_editors_of_article, get_all_bots
-from crowd_diversity.wiki_get_editor_contribution import get_editor_contribution_to_wikipedia
+from crowd_diversity.utility_functions import get_editors_of_article, get_all_bots, get_editor_contributions
 
 
 def contribution_diversity(article):
@@ -23,6 +22,7 @@ def contribution_diversity(article):
 
 def experience_diversity(article):
     editors = list(set(get_editors_of_article(article)))
+    contributions = get_editor_contributions()
     bots = get_all_bots()
     for editor in editors:
         if editor in bots:
@@ -30,7 +30,7 @@ def experience_diversity(article):
 
     freq = []
     for editor in editors:
-        freq.append(get_editor_contribution_to_wikipedia(editor))
+        freq.append(contributions[editor])
 
     diversity = math.log10((statistics.pvariance(freq)) ** 0.5 / statistics.mean(freq) * 100)
     return diversity
