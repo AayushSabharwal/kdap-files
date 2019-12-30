@@ -44,10 +44,35 @@ def random_questions(count):
             qa_root[i][j].text = chosen_answers[question_ids[i]][j].get('Body')
 
     qa_tree = ET.ElementTree(qa_root)
-
     qa_tree.write("stackex_qa_data.xml")
 
+    '''
+    format:
+    <root>
+        <comment Id='' ParentId=''>
+            ...
+        </comment>
+    </root>
+    '''
 
+    comments_tree = ET.parse('Comments.xml')
+    comments_root = comments_tree.getroot()
+
+    related_comments = []
+    for row in comments_root:
+        if row.get('PostId') in comment_parent_ids:
+            related_comments.append(row)
+
+    relcomm_root = ET.Element('root')
+    for i in range(len(related_comments)):
+        ET.SubElement(relcomm_root, 'comment', {'Id': related_comments[i].get('Id'),
+                                                'ParentId': related_comments[i].get('PostId')})
+        relcomm_root[i].text = related_comments[i].get('Text')
+
+    relcomm_tree = ET.ElementTree(relcomm_root)
+    relcomm_tree.write('stackex_comment_data.xml')
+
+random_questions(1000)
 '''
 tree = ET.parse('stackex_qa_data.xml')
 root = tree.getroot()
