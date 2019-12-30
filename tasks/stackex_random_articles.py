@@ -4,21 +4,6 @@ import random
 
 def random_questions(count):
     posts_tree = ET.parse('Posts.xml')
-    '''
-    [
-        {
-            question_id:
-            title: ''
-            text: ''
-            answers:[
-                        {
-                            answer_id: 
-                            body: ''
-                        }
-                    ]
-        }
-    ]
-    '''
     question_tags = []
     answer_tags = []
     posts_root = posts_tree.getroot()
@@ -39,6 +24,16 @@ def random_questions(count):
 
     comment_parent_ids.extend(question_ids)
 
+    '''
+    format:
+    <root>
+        <question Id='' Body='' Title=''>
+            <answer Id=''>
+            ...answer...
+            </answer>
+        </question>
+    </root>
+    '''
     qa_root = ET.Element("root")
     for i in range(len(question_ids)):
         ET.SubElement(qa_root, 'question', {'Id': question_ids[i],
@@ -52,9 +47,12 @@ def random_questions(count):
 
     qa_tree.write("stackex_qa_data.xml")
 
+
+'''
 tree = ET.parse('stackex_qa_data.xml')
 root = tree.getroot()
 c = 0
 for child in root.iter('question'):
     c += 1
 print(c)
+'''
