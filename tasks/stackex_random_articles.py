@@ -3,7 +3,7 @@ import random
 
 
 def random_questions(count):
-    posts_tree = ET.parse('Posts.xml')
+    posts_tree = ET.parse('anime.stackexchange.com/Posts.xml')
     question_tags = []
     answer_tags = []
     posts_root = posts_tree.getroot()
@@ -55,7 +55,7 @@ def random_questions(count):
     </root>
     '''
 
-    comments_tree = ET.parse('Comments.xml')
+    comments_tree = ET.parse('anime.stackexchange.com/Comments.xml')
     comments_root = comments_tree.getroot()
 
     related_comments = []
@@ -72,7 +72,8 @@ def random_questions(count):
     relcomm_tree = ET.ElementTree(relcomm_root)
     relcomm_tree.write('stackex_comment_data.xml')
 
-random_questions(1000)
+
+# random_questions(1000)
 '''
 tree = ET.parse('stackex_qa_data.xml')
 root = tree.getroot()
