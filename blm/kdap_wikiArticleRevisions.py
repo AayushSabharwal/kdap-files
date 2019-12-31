@@ -31,6 +31,6 @@ def get_revisions_of_article(article_name, rvprop=''):
 
 
 
-# d=get_revisions_of_article('Indian_Institute_of_Technology_Ropar', rvprop='user|timestamp|comment|sha1')
+# d=get_revisions_of_article('Indian_Institute_of_Technology_Ropar', rvprop='user|timestamp|comment|sha1|content')
 
 # print(d['Indian_Institute_of_Technology_Ropar'])
