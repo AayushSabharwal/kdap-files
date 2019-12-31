@@ -4,7 +4,7 @@ import mwparserfromhell as mwph
 import nltk
 import requests
 
-
+'''
 def diff_rev(rv1, rv2):
     url = 'https://en.wikipedia.org/w/api.php?action=compare&format=json&fromrev=' + rv1 + '&torev=' + rv2
     r = requests.get(url)
@@ -13,12 +13,6 @@ def diff_rev(rv1, rv2):
     additions = [bsoup(str(tag), 'lxml').text for tag in soup.find_all('ins', {'class': 'diffchange diffchange-inline'})]
     deletions = [bsoup(str(tag), 'lxml').text for tag in soup.find_all('del', {'class': 'diffchange diffchange-inline'})]
     return additions, deletions
-
-
-def remove_punctuation(words):
-    return [word for word in words if word not in ['.', '!', ',', ';', ':', '(', ')', '"', "'", '/', '-', '_', '=', '+',
-                                                   "''", "'''", 'http', 'https', ',', '[', ']', '{', '}', '|', '\\', '"'
-                                                   '``', '`', '<', '>', '--']]
 
 
 def get_delta_data(changes):
@@ -51,8 +45,73 @@ def revision_changes(article_name):
         revisions_delta[revisions[i+1]['revid']]['deletions'] = del_data
 
     return revisions_delta
+'''
 
 
+def remove_punctuation(words):
+    return [word for word in words if word not in ['.', '!', ',', ';', ':', '(', ')', '"', "'", '/', '-', '_', '=', '+',
+                                                   "''", "'''", 'http', 'https', ',', '[', ']', '{', '}', '|', '\\',
+                                                   '"', '``', '`', '<', '>', '--', '%', '#']]
+
+
+def filter_elements(text, start_chars, end_chars):
+    s = 0
+    while text.find(start_chars, s) != -1:
+        s = text.find(start_chars, s)
+        e = text.find(end_chars, s)
+        text = text[:s] + text[e + len(end_chars):]
+
+    return text
+
+
+def count_in_article(article_name):
+    soup = bsoup(requests.get('https://en.wikipedia.org/wiki/Special:Export/' + article_name).text, 'lxml')
+    pagetext = soup.find('text').text
+
+    wikilinks = mwph.parse(pagetext).filter_wikilinks()
+    for wl in wikilinks:
+        if wl[:7].lower() == '[[file:' or wl[:11].lower() == '[[category:':
+            pagetext = pagetext.replace(str(wl), '')
+
+    for wl in wikilinks:
+        if wl[:7].lower() != '[[file:' and wl[:11].lower() != '[[category:':
+            pagetext = pagetext.replace(str(wl), str(wl)[2:-2])
+
+    wikitemplates = mwph.parse(pagetext).filter_templates()
+    for wt in wikitemplates:
+        pagetext = pagetext.replace(str(wt), '')
+
+    comments = mwph.parse(pagetext).filter_comments()
+    for comment in comments:
+        pagetext = pagetext.replace(str(comment), '')
+
+    external_links = mwph.parse(pagetext).filter_external_links()
+    for ex_l in external_links:
+        pagetext = pagetext.replace(str(ex_l), '')
+
+    headings = mwph.parse(pagetext).filter_headings()
+    for heading in headings:
+        pagetext = pagetext.replace(str(heading), str(heading).strip('='))
+
+    html_entities = mwph.parse(pagetext).filter_html_entities()
+    for h_ent in html_entities:
+        pagetext = pagetext.replace(str(h_ent), '')
+
+    pagetext = filter_elements(pagetext, '{| class="wikitable', '|}')
+    pagetext = filter_elements(pagetext, '{| class="infobox', '|}')
+    pagetext = filter_elements(pagetext, '{| class="floatright', '|}')
+    pagetext = filter_elements(pagetext, '{{cite', '}}')
+    pagetext = filter_elements(pagetext, '<', '>')
+
+    count_dict = {'wikilinks': len(wikilinks),
+                  'words': len(remove_punctuation(nltk.word_tokenize(pagetext))),
+                  'sentences': len(nltk.sent_tokenize(pagetext))}
+
+    return count_dict
+
+
+# print(count_in_article('United States'))
 '''
 print(revision_changes('Talk:Evan Amos'))
+[[File:U.S. Territorial Acquisitions.png|thumb|left|upright=1.4|United States territorial acquisitions|U.S. territorial acquisitionsportions of each territory were granted statehood since the 18th century.]]
 '''
