@@ -14,7 +14,8 @@ def get_revisions_of_article(article_name, rvprop=''):
         r = requests.get(url)
         data = r.json()
         pages = data['query']['pages']
-
+        if data.get('warnings'):
+            print(data['warnings'])
         for page in pages:
             if 'revisions' in pages[page]:
                 for i in pages[page]['revisions']:
@@ -29,8 +30,7 @@ def get_revisions_of_article(article_name, rvprop=''):
     return revisions_dict
 
 
-'''
-d=get_revisions_of_article('Indian_Institute_of_Technology_Ropar')
 
-print(d['Indian_Institute_of_Technology_Ropar'])
-'''
+# d=get_revisions_of_article('Indian_Institute_of_Technology_Ropar', rvprop='user|timestamp|comment|sha1|content')
+
+# print(d['Indian_Institute_of_Technology_Ropar'])
