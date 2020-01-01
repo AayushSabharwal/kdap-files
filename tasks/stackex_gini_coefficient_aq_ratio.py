@@ -55,9 +55,15 @@ def get_correlation(portal_dirs):
     return ss.pearsonr(gini_coefficients, a_to_q_ratios)
 
 
-print(get_correlation(['3dprinting.stackexchange.com', 'ai.stackexchange.com', 'anime.stackexchange.com',
+'''
+import time
+s = time.time()
+get_correlation(['3dprinting.stackexchange.com', 'ai.stackexchange.com', 'anime.stackexchange.com',
                        'arduino.stackexchange.com', 'boardgames.stackexchange.com', 'chemistry.stackexchange.com',
-                       'chess.stackexchange.com']))
+                       'chess.stackexchange.com'])
+e = time.time()
+print(e-s)
+'''
 '''
 print(get_gini_coefficient('anime.stackexchange.com'))
 print(get_answer_to_question_ratio('anime.stackexchange.com'))

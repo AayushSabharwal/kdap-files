@@ -73,7 +73,11 @@ def random_questions(count):
     relcomm_tree.write('stackex_comment_data.xml')
 
 
-# random_questions(1000)
+import time
+s = time.time()
+random_questions(10000)
+e = time.time()
+print(e-s)
 '''
 tree = ET.parse('stackex_qa_data.xml')
 root = tree.getroot()

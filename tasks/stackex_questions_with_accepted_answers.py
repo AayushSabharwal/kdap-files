@@ -27,4 +27,10 @@ def get_aa_questions():
     aaques_tree.write('stackex_accepted_answer_questions.xml')
 
 
-# get_aa_questions()
+'''
+import time
+s = time.time()
+get_aa_questions()
+e = time.time()
+print(e-s)
+'''

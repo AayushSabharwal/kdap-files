@@ -24,4 +24,10 @@ def get_articles():
         json.dump(articles, fh)
 
 
+'''
+import time
+s = time.time()
 get_articles()
+e = time.time()
+print(e-s)
+'''
