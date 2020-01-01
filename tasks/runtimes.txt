@@ -20,3 +20,6 @@ wiki_get_5_articles_per_quality.py
     get_articles()
     70.45966529846191s
 
+wiki_pageviews_and_revisions_correlation.py
+    find_correlation("United States")
+    70.27014470100403s

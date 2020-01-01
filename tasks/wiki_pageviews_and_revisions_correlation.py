@@ -36,8 +36,10 @@ def find_correlation(article_name):
     return ss.pearsonr(list(pageviews.values()), list(rev_count.values()))
 
 
+'''
 import time
 s = time.time()
 find_correlation('United States')
 e = time.time()
 print(e-s)
+'''

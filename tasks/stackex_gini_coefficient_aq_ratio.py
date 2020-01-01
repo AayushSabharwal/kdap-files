@@ -68,5 +68,3 @@ print(e-s)
 print(get_gini_coefficient('anime.stackexchange.com'))
 print(get_answer_to_question_ratio('anime.stackexchange.com'))
 '''
-
-
