@@ -16,6 +16,10 @@ wiki_changes_in_article_revisions.py
     count_in_article('United States')
     5.49356484413147s
 
+    revision_changes("Indian Institute of Technology Ropar")
+    617 revisions total
+    454.1631667613983s
+
 wiki_get_5_articles_per_quality.py
     get_articles()
     70.45966529846191s

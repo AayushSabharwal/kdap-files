@@ -16,6 +16,9 @@ wiki_changes_in_article_revisions.py
     count_in_article('United States')
     34.49609375 MiB
 
+    revision_changes("Indian Institute of Technology Ropar")
+    10.5546875
+
 wiki_get_5_articles_per_quality.py
     get_articles()
     4.0703125 MiB

@@ -1,10 +1,10 @@
-# from blm.kdap_wikiArticleRevisions import get_revisions_of_article
+from blm.kdap_wikiArticleRevisions import get_revisions_of_article
 from bs4 import BeautifulSoup as bsoup
 import mwparserfromhell as mwph
 import nltk
 import requests
 
-'''
+
 def diff_rev(rv1, rv2):
     url = 'https://en.wikipedia.org/w/api.php?action=compare&format=json&fromrev=' + rv1 + '&torev=' + rv2
     r = requests.get(url)
@@ -15,14 +15,20 @@ def diff_rev(rv1, rv2):
     return additions, deletions
 
 
+def clean_text(text):
+    chars = ['`', '"', "'", ';', ':', '<', '>', '/', '\\', '|', '[', ']', '{', '}', '=', '+', '-', '_', '@', '(', ')']
+    for char in chars:
+        text = text.replace(char, '')
+    return text
+
+
 def get_delta_data(changes):
     delta_data = {'words': 0, 'sentences': 0, 'wikilinks': 0}
     for change in changes:
         wikitext = mwph.parse(change)
         delta_data['wikilinks'] += len(wikitext.filter_wikilinks())
-
-        cleaned_addition = change.replace('[[', '').replace(']]', '')
-        sentences = nltk.sent_tokenize(cleaned_addition)
+        cleaned_addition = clean_text(change)
+        sentences = remove_punctuation(nltk.sent_tokenize(cleaned_addition))
         print(sentences)
         delta_data['sentences'] += len(sentences)
         words = remove_punctuation(nltk.word_tokenize(cleaned_addition))
@@ -34,6 +40,7 @@ def get_delta_data(changes):
 
 def revision_changes(article_name):
     revisions = get_revisions_of_article(article_name, rvprop='ids')[article_name]
+    print(len(revisions))
     revisions.reverse()
     revisions_delta = {}
     for i in range(len(revisions) - 1):
@@ -45,7 +52,6 @@ def revision_changes(article_name):
         revisions_delta[revisions[i+1]['revid']]['deletions'] = del_data
 
     return revisions_delta
-'''
 
 
 def remove_punctuation(words):
@@ -54,15 +60,33 @@ def remove_punctuation(words):
                                                    '"', '``', '`', '<', '>', '--', '%', '#']]
 
 
+def memory_usage_psutil():
+    # return the memory usage in MB
+    import psutil
+    import os
+    process = psutil.Process(os.getpid())
+    mem = process.memory_info()[0] / float(2 ** 20)
+    return mem
+
+
+import time
+
+st = time.time()
+sm = memory_usage_psutil()
+revision_changes("Indian Institute of Technology Ropar")
+et = time.time()
+em = memory_usage_psutil()
+print(et - st)
+print(em - sm)
+'''
 def filter_elements(text, start_chars, end_chars):
     s = 0
     while text.find(start_chars, s) != -1:
         s = text.find(start_chars, s)
         e = text.find(end_chars, s)
-        text = text[:s] + text[e + len(end_chars):]
+        text = text[:s] + text[e + (len(end_chars) if e + len(end_chars) < len(text) else 0):]
 
     return text
-
 
 def count_in_article(article_name):
     soup = bsoup(requests.get('https://en.wikipedia.org/wiki/Special:Export/' + article_name).text, 'lxml')
@@ -108,7 +132,7 @@ def count_in_article(article_name):
                   'sentences': len(nltk.sent_tokenize(pagetext))}
 
     return count_dict
-
+'''
 
 '''
 print(revision_changes('Talk:Evan Amos'))
