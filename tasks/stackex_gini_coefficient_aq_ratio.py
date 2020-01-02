@@ -54,6 +54,19 @@ def get_correlation(portal_dirs):
         a_to_q_ratios.append(get_answer_to_question_ratio(portal_dir))
     return ss.pearsonr(gini_coefficients, a_to_q_ratios)
 
+def memory_usage_psutil():
+    # return the memory usage in MB
+    import psutil
+    import os
+    process = psutil.Process(os.getpid())
+    mem = process.memory_info()[0] / float(2 ** 20)
+    return mem
+
+print(memory_usage_psutil())
+get_correlation(['3dprinting.stackexchange.com', 'ai.stackexchange.com', 'anime.stackexchange.com',
+                       'arduino.stackexchange.com', 'boardgames.stackexchange.com', 'chemistry.stackexchange.com',
+                       'chess.stackexchange.com'])
+print(memory_usage_psutil())
 
 '''
 import time
