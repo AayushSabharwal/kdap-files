@@ -109,11 +109,7 @@ def count_in_article(article_name):
 
     return count_dict
 
-import time
-s = time.time()
-count_in_article('United States')
-e = time.time()
-print(e-s)
+
 '''
 print(revision_changes('Talk:Evan Amos'))
 [[File:U.S. Territorial Acquisitions.png|thumb|left|upright=1.4|United States territorial acquisitions|U.S. territorial acquisitionsportions of each territory were granted statehood since the 18th century.]]

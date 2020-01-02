@@ -36,6 +36,18 @@ def find_correlation(article_name):
     return ss.pearsonr(list(pageviews.values()), list(rev_count.values()))
 
 
+def memory_usage_psutil():
+    # return the memory usage in MB
+    import psutil
+    import os
+    process = psutil.Process(os.getpid())
+    mem = process.memory_info()[0] / float(2 ** 20)
+    return mem
+
+print(memory_usage_psutil())
+find_correlation('United States')
+print(memory_usage_psutil())
+
 '''
 import time
 s = time.time()
